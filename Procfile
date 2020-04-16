@@ -1,1 +1,1 @@
-web: java -D server.port=$PORT -D spring.profiles.active=prod $JAVA_OPTS -jar target/dependency/cursomc-0.0.1-SNAPSHOT.jar
+web: java $JAVA_OPTS -jar target/dependency/cursomc-0.0.1-SNAPSHOT.jar --port $PORT target/*.wa
