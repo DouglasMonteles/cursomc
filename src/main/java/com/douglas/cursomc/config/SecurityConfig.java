@@ -36,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	public static final String[] PUBLIC_MATCHERS = {
 		"/h2-console/**",
-		"/browser/**",
 	};
 	
 	public static final String[] PUBLIC_MATCHERS_GET = {
@@ -61,8 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Override
-	public void configure(AuthenticationManagerBuilder builder) throws Exception {
-		builder.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
 	
 	@Bean

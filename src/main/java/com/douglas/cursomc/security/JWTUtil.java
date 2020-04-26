@@ -13,10 +13,10 @@ public class JWTUtil {
 
 	@Value("${jwt.secret}")
 	private String secret;
-	
+
 	@Value("${jwt.expiration}")
 	private Long expiration;
-	
+
 	public String generateToken(String username) {
 		return Jwts.builder()
 				.setSubject(username)
@@ -24,5 +24,4 @@ public class JWTUtil {
 				.signWith(SignatureAlgorithm.HS512, secret.getBytes())
 				.compact();
 	}
-	
 }

@@ -11,14 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import com.douglas.cursomc.domain.enums.Perfil;
 
 public class UserSS implements UserDetails {
-
 	private static final long serialVersionUID = 1L;
-	
+
 	private Integer id;
 	private String email;
 	private String senha;
 	private Collection<? extends GrantedAuthority> authorities;
-	
+
 	public UserSS() {
 	}
 
@@ -27,18 +26,17 @@ public class UserSS implements UserDetails {
 		this.id = id;
 		this.email = email;
 		this.senha = senha;
-		this.authorities = perfis.stream().map(perfil -> new SimpleGrantedAuthority(perfil.getDescricao())).collect(Collectors.toList());
+		this.authorities = perfis.stream().map(x -> new SimpleGrantedAuthority(x.getDescricao()))
+				.collect(Collectors.toList());
 	}
 
-
+	public Integer getId() {
+		return id;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
-	}
-	
-	public Integer getId() {
-		return id;
 	}
 
 	@Override
@@ -70,5 +68,4 @@ public class UserSS implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
 }
