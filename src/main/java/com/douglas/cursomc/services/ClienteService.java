@@ -123,17 +123,20 @@ public class ClienteService {
 	}
 	
 	public void uploadProfilePicture(MultipartFile file) {
-		String pictureName;
-		
 		UserSS user = UserService.authenticated();
 		if (user == null) {
-			pictureName = file.getOriginalFilename();
-		} else {
-			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
-			pictureName = "idCliente:" + user.getId().toString() + "." + extention;
+			throw new AuthorizationException("Acesso negado");
 		}
 		
 		try {
+			String pictureName = file.getOriginalFilename();
+			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
+			pictureName = "/uploads/" + "idCliente:" + user.getId().toString() + "." + extention;
+		
+			Optional<Cliente> cli = repository.findById(user.getId());
+			cli.get().setImageUrl(pictureName);
+			repository.save(cli.get());
+		
 			new File(UPLOAD_DIRECTORY).mkdir();
 			Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, pictureName);
 			Files.write(fileNameAndPath, file.getBytes());
