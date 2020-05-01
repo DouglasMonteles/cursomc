@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,7 +35,7 @@ import com.douglas.cursomc.services.exceptions.ObjectNotFoundException;
 @Service
 public class ClienteService {
 	
-	public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
+	public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir");
 
 	@Autowired
 	private ClienteRepository repository;
@@ -44,6 +45,9 @@ public class ClienteService {
 	
 	@Autowired
 	private BCryptPasswordEncoder encoder;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	public Cliente find(Integer id) {
 		UserSS user = UserService.authenticated();
@@ -130,7 +134,7 @@ public class ClienteService {
 		
 		try {
 			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
-			String pictureName = "/uploads/" + "cp" + user.getId().toString() + "." + extention;
+			String pictureName = "/uploads/" + prefix + user.getId().toString() + "." + extention;
 		
 			Optional<Cliente> cli = repository.findById(user.getId());
 			cli.get().setImageUrl(pictureName);
