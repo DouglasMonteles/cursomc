@@ -1,8 +1,13 @@
 package com.douglas.cursomc.services;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -11,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.douglas.cursomc.domain.Cidade;
 import com.douglas.cursomc.domain.Cliente;
@@ -27,6 +33,8 @@ import com.douglas.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
+	
+	public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
 	@Autowired
 	private ClienteRepository repository;
@@ -112,6 +120,26 @@ public class ClienteService {
 	private void updateData(Cliente newObj, Cliente obj) {
 		newObj.setNome(obj.getNome());
 		newObj.setEmail(obj.getEmail());
+	}
+	
+	public void uploadProfilePicture(MultipartFile file) {
+		String pictureName;
+		
+		UserSS user = UserService.authenticated();
+		if (user == null) {
+			pictureName = file.getOriginalFilename();
+		} else {
+			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
+			pictureName = user.getId().toString() + "." + extention;
+		}
+		
+		try {
+			new File(UPLOAD_DIRECTORY).mkdir();
+			Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, pictureName);
+			Files.write(fileNameAndPath, file.getBytes());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 }
