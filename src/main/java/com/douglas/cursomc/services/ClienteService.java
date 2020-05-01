@@ -129,9 +129,8 @@ public class ClienteService {
 		}
 		
 		try {
-			String pictureName = file.getOriginalFilename();
 			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
-			pictureName = "/uploads/" + "idCliente:" + user.getId().toString() + "." + extention;
+			String pictureName = "/uploads/" + "cp" + user.getId().toString() + "." + extention;
 		
 			Optional<Cliente> cli = repository.findById(user.getId());
 			cli.get().setImageUrl(pictureName);
