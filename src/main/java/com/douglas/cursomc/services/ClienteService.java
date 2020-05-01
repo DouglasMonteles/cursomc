@@ -130,7 +130,7 @@ public class ClienteService {
 			pictureName = file.getOriginalFilename();
 		} else {
 			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
-			pictureName = user.getId().toString() + "." + extention;
+			pictureName = "idCliente:" + user.getId().toString() + "." + extention;
 		}
 		
 		try {

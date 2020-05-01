@@ -91,10 +91,10 @@ public class ClienteResource {
 		return ResponseEntity.ok().body(listDto);
 	}
 	
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public ResponseEntity<Void> uploadFoto(@RequestParam("foto") MultipartFile foto) {
-		service.uploadProfilePicture(foto);
-		return ResponseEntity.created(null).build();
+	@RequestMapping(value = "/picture", method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
+		service.uploadProfilePicture(file);
+		return ResponseEntity.ok().build();
 	}
 	
 }
