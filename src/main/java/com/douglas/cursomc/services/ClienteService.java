@@ -1,13 +1,18 @@
 package com.douglas.cursomc.services;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -30,12 +35,13 @@ import com.douglas.cursomc.repositories.ClienteRepository;
 import com.douglas.cursomc.repositories.EnderecoRepository;
 import com.douglas.cursomc.security.UserSS;
 import com.douglas.cursomc.services.exceptions.AuthorizationException;
+import com.douglas.cursomc.services.exceptions.FileException;
 import com.douglas.cursomc.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class ClienteService {
 	
-	public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir");
+	public static final String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads";
 
 	@Autowired
 	private ClienteRepository repository;
@@ -149,7 +155,7 @@ public class ClienteService {
 		
 		try {
 			String extention = FilenameUtils.getExtension(file.getOriginalFilename());
-			String pictureName = "/uploads/" + prefix + user.getId().toString() + "." + extention;
+			String pictureName = prefix + user.getId().toString() + "." + extention;
 		
 			Optional<Cliente> cli = repository.findById(user.getId());
 			cli.get().setImageUrl(pictureName);
@@ -159,8 +165,21 @@ public class ClienteService {
 			Path fileNameAndPath = Paths.get(UPLOAD_DIRECTORY, pictureName);
 			Files.write(fileNameAndPath, file.getBytes());
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new FileException("Erro no upload da imagem");
 		}
 	}
 	
+	public void showProfilePicture(String pictureUrl, HttpServletResponse response) {
+		try {
+			File picture = new File(UPLOAD_DIRECTORY + "/"+ pictureUrl);
+			try (InputStream stream  = new FileInputStream(picture)) {
+				response.setContentType("application/force-download");
+				response.setHeader("Content-Disposition", "attachment; filename=" + pictureUrl);
+				IOUtils.copy(stream, response.getOutputStream());
+				response.flushBuffer();
+			}
+		} catch (Exception e) {
+			throw new FileException("Erro ao exibir imagem");
+		}
+	}
 }

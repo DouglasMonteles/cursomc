@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,6 +101,12 @@ public class ClienteResource {
 	@RequestMapping(value = "/picture", method = RequestMethod.POST)
 	public ResponseEntity<Void> uploadProfilePicture(@RequestParam("file") MultipartFile file) {
 		service.uploadProfilePicture(file);
+		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping(value = "/picture/show/{fileUrl}", method = RequestMethod.GET)
+	public ResponseEntity<Void> showProfilePicture(@PathVariable("fileUrl") String fileUrl, HttpServletResponse response) {
+		service.showProfilePicture(fileUrl, response);
 		return ResponseEntity.ok().build();
 	}
 	
