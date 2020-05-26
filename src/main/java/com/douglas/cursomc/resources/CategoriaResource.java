@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.douglas.cursomc.domain.Categoria;
@@ -90,4 +92,15 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(listDto);
 	}
 	
+	@RequestMapping(value = "/picture/{id}", method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@PathVariable Integer id, @RequestParam("file") MultipartFile file) {
+		service.uploadCategoriaPicture(file, id);
+		return ResponseEntity.ok().build();
+	}
+	
+	@RequestMapping(value = "/picture/show/{fileUrl}", method = RequestMethod.GET)
+	public ResponseEntity<Void> showProfilePicture(@PathVariable("fileUrl") String fileUrl, HttpServletResponse response) {
+		service.showProfilePicture(fileUrl, response);
+		return ResponseEntity.ok().build();
+	}
 }
